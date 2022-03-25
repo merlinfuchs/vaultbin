@@ -19,6 +19,11 @@ jobs:
             archive: zip
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - run: npm install && npm run build
+        working-directory: ./temp
       - name: Compile and release
         uses: rust-build/rust-build.action@latest
         env:
