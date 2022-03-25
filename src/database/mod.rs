@@ -98,10 +98,8 @@ impl Database {
         let unix_now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
         let end_expiry = unix_now.as_nanos().to_be_bytes();
 
-        for entry in tree.range(start_expiry..end_expiry) {
-            if let Ok((_, paste_id)) = entry {
-                self.db.remove(paste_id)?;
-            }
+        for (_, paste_id) in tree.range(start_expiry..end_expiry).flatten() {
+            self.db.remove(paste_id)?;
         }
 
         Ok(())

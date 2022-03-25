@@ -34,7 +34,7 @@ pub async fn route_serve_frontend(path: web::Path<String>) -> impl Responder {
     }
 
     if let Some(file) = file {
-        let mime_type = get_mime_type_for_file(&Path::new(&path));
+        let mime_type = get_mime_type_for_file(Path::new(&path));
         let body: Bytes = match file.data {
             Cow::Borrowed(bytes) => bytes.into(),
             Cow::Owned(bytes) => bytes.into(),
