@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '16'
       - run: npm install && npm run build
-        working-directory: ./temp
+        working-directory: ./frontend
       - name: Compile and release
         uses: rust-build/rust-build.action@latest
         env:
