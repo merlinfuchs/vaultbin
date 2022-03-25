@@ -1,0 +1,10 @@
+{
+  "name": "vaultbin",
+  "short_name": "vaultbin",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff",
+  "theme_color": "#b0bcf7",
+  "icons": []
+}

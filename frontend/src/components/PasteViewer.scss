@@ -1,0 +1,28 @@
+.container {
+  color: white;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 14px;
+
+  .line {
+    display: flex;
+
+    .lineNumber {
+      min-width: 30px;
+      padding-right: 8px;
+      font-weight: 600;
+      flex: none;
+      color: #b0bcf7;
+      user-select: none;
+    }
+
+    .lineCode {
+      white-space: pre-wrap;
+      word-break: break-all;
+      flex: auto;
+    }
+  }
+}

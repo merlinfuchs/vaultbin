@@ -1,0 +1,12 @@
+.textarea {
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    padding: 0;
+    outline: none;
+    resize: none;
+    margin: 0;
+    border: none;
+    font-size: 14px;
+    color: white;
+}
