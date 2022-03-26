@@ -101,14 +101,17 @@ impl Database {
     }
 
     pub fn enforce_paste_expirations(&self) -> DatabaseResult<()> {
-        let tree = self.db.open_tree("expirations")?;
+        let expirations_tree = self.db.open_tree("expirations")?;
+        let views_tree = self.db.open_tree("views")?;;
 
         let start_expiry = 0u128.to_be_bytes();
         let unix_now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
         let end_expiry = unix_now.as_nanos().to_be_bytes();
 
-        for (_, paste_id) in tree.range(start_expiry..end_expiry).flatten() {
-            self.db.remove(paste_id)?;
+        for (expiry, paste_id) in expirations_tree.range(start_expiry..end_expiry).flatten() {
+            self.db.remove(&paste_id)?;
+            views_tree.remove(&paste_id)?;
+            expirations_tree.remove(expiry)?;
         }
 
         Ok(())
