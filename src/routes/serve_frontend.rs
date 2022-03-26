@@ -3,8 +3,13 @@ use std::path::Path;
 
 use actix_web::{get, HttpResponse, Responder, web};
 use actix_web::web::Bytes;
+use lol_html::{element, HtmlRewriter};
+use lol_html::html_content::ContentType;
 use mime::Mime;
 use rust_embed::RustEmbed;
+use unicode_truncate::UnicodeTruncateStr;
+
+use crate::database::{Database, decode_bytes_from_string};
 
 #[derive(RustEmbed)]
 #[folder = "$CARGO_MANIFEST_DIR/frontend/build"]
@@ -24,25 +29,80 @@ fn get_mime_type_for_file(path: &Path) -> Mime {
     }
 }
 
-#[get("/{path:.*}")]
-pub async fn route_serve_frontend(path: web::Path<String>) -> impl Responder {
-    let mut path = path.into_inner();
-    let mut file = FrontendFiles::get(&path);
-    if file.is_none() {
-        path = String::from("index.html");
-        file = FrontendFiles::get(&path);
+fn cow_to_bytes(cow: Cow<'static, [u8]>) -> Bytes {
+    match cow {
+        Cow::Borrowed(bytes) => bytes.into(),
+        Cow::Owned(bytes) => bytes.into(),
     }
+}
 
-    if let Some(file) = file {
-        let mime_type = get_mime_type_for_file(Path::new(&path));
-        let body: Bytes = match file.data {
-            Cow::Borrowed(bytes) => bytes.into(),
-            Cow::Owned(bytes) => bytes.into(),
-        };
-        HttpResponse::Ok()
-            .append_header(("Content-Type", mime_type))
-            .body(body)
-    } else {
-        HttpResponse::NotFound().finish()
+// panics when there is no index.html
+fn get_index_file(path: &Path, db: &Database) -> Bytes {
+    let maybe_paste_id = match path.file_name() {
+        Some(n) if n.len() > 16 && n.len() < 32 => n.to_str(),
+        _ => None
+    };
+
+    let fallback = || cow_to_bytes(FrontendFiles::get("index.html").unwrap().data);
+
+    let paste_id = match maybe_paste_id {
+        Some(p) => p,
+        None => return fallback()
+    };
+
+    let decode_paste_id = match decode_bytes_from_string(&paste_id) {
+        Ok(p) => p,
+        Err(_) => return fallback()
+    };
+
+    let paste = match db.get_paste(&decode_paste_id) {
+        Ok(Some(p)) => p,
+        _ => return fallback()
+    };
+
+    let file = FrontendFiles::get("index.html").unwrap();
+    let mut output = Vec::with_capacity(file.data.len());
+
+    let mut rewriter = HtmlRewriter::new(
+        lol_html::Settings {
+            element_content_handlers: vec![
+                element!("head", |el| {
+                    let escaped_content = html_escape::encode_text(paste.content.unicode_truncate(500).0);
+                    let description_meta = format!("<meta property=\"og:description\" content=\"{}\"/>", escaped_content);
+                    el.append(&description_meta, ContentType::Html);
+                    /* if let Some(language) = &paste.language {
+                        let image_meta = format!("<meta property=\"og:image\" property=\"https://cdn.jsdelivr.net/npm/programming-languages-logos@0.0.3/src/{}/{}.png\"/>", language, language);
+                        el.append(&image_meta, ContentType::Html);
+                    } */
+                    Ok(())
+                })
+            ],
+            ..lol_html::Settings::default()
+        },
+        |c: &[u8]| output.extend_from_slice(c),
+    );
+
+    match rewriter.write(file.data.as_ref()) {
+        Ok(_) => output.into(),
+        // we really don't want to fail here
+        Err(_) => cow_to_bytes(file.data)
     }
+}
+
+#[get("/{path:.*}")]
+pub async fn route_serve_frontend(path: web::Path<String>, db: web::Data<Database>) -> impl Responder {
+    let raw_path = path.into_inner();
+    let path = Path::new(&raw_path);
+
+    let (body, mime_type) = match raw_path.as_str() {
+        "index.html" => (get_index_file(&path, &db), mime::TEXT_HTML),
+        p => match FrontendFiles::get(p) {
+            Some(f) => (cow_to_bytes(f.data), get_mime_type_for_file(&path)),
+            None => (get_index_file(&path, &db), mime::TEXT_HTML)
+        }
+    };
+
+    HttpResponse::Ok()
+        .append_header(("Content-Type", mime_type))
+        .body(body)
 }

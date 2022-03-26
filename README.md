@@ -32,6 +32,7 @@ To build this project from source you need [node](https://nodejs.org/en/download
 
 Build the frontend:
 ```shell
+npm run install
 npm run build
 ```
 

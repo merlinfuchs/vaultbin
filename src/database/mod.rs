@@ -1,4 +1,5 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use base64::{CharacterSet, DecodeError};
 use sha2::{Digest, Sha256};
 
 use encryption::*;
@@ -14,6 +15,14 @@ mod error;
 #[derive(Clone)]
 pub struct Database {
     db: sled::Db,
+}
+
+pub fn encode_bytes_to_string(bytes: &[u8]) -> String {
+    base64::encode_config(bytes, base64::Config::new(CharacterSet::UrlSafe, false))
+}
+
+pub fn decode_bytes_from_string(string: &str) -> Result<Vec<u8>, DecodeError> {
+    base64::decode_config(string, base64::Config::new(CharacterSet::UrlSafe, false))
 }
 
 fn increment(old: Option<&[u8]>) -> Option<Vec<u8>> {

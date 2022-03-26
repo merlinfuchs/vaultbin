@@ -1,9 +1,8 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use actix_web::{HttpResponse, post, Responder, web};
-use base64::CharacterSet;
 
-use crate::database::{Database, PasteModel};
+use crate::database::{Database, encode_bytes_to_string, PasteModel};
 use crate::VaultbinConfig;
 use crate::wire::{ApiError, ApiResponse, CreatePasteRequestData, CreatePasteResponseData, PasteResponseData, RouteResult};
 
@@ -12,7 +11,7 @@ pub async fn route_api_paste_create(db: web::Data<Database>, data: web::Json<Cre
     let data = data.into_inner();
 
     if data.content.len() > config.max_paste_size {
-        return Err(ApiError::PasteTooLarge)
+        return Err(ApiError::PasteTooLarge);
     }
 
     let model = PasteModel {
@@ -25,7 +24,7 @@ pub async fn route_api_paste_create(db: web::Data<Database>, data: web::Json<Cre
     let expiry = data.expiration.unwrap_or(config.max_expiration).min(config.max_expiration);
     db.set_paste_expiration(&id, Duration::from_secs(expiry))?;
 
-    let encoded_id = base64::encode_config(id, base64::Config::new(CharacterSet::UrlSafe, false));
+    let encoded_id = encode_bytes_to_string(&id);
     let paste = PasteResponseData {
         id: encoded_id,
         content: model.content,
