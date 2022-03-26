@@ -3,13 +3,10 @@ use std::path::Path;
 
 use actix_web::{get, HttpResponse, Responder, web};
 use actix_web::web::Bytes;
-use lol_html::{element, HtmlRewriter};
-use lol_html::html_content::ContentType;
 use mime::Mime;
 use rust_embed::RustEmbed;
-use unicode_truncate::UnicodeTruncateStr;
 
-use crate::database::{Database, decode_bytes_from_string};
+use crate::database::Database;
 
 #[derive(RustEmbed)]
 #[folder = "$CARGO_MANIFEST_DIR/frontend/build"]
@@ -37,8 +34,9 @@ fn cow_to_bytes(cow: Cow<'static, [u8]>) -> Bytes {
 }
 
 // panics when there is no index.html
-fn get_index_file(path: &Path, db: &Database) -> Bytes {
-    let maybe_paste_id = match path.file_name() {
+fn get_index_file(_path: &Path, _db: &Database) -> Bytes {
+    return cow_to_bytes(FrontendFiles::get("index.html").unwrap().data);
+    /* let maybe_paste_id = match path.file_name() {
         Some(n) if n.len() > 16 && n.len() < 32 => n.to_str(),
         _ => None
     };
@@ -86,7 +84,7 @@ fn get_index_file(path: &Path, db: &Database) -> Bytes {
         Ok(_) => output.into(),
         // we really don't want to fail here
         Err(_) => cow_to_bytes(file.data)
-    }
+    } */
 }
 
 #[get("/{path:.*}")]

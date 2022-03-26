@@ -20,11 +20,6 @@ This project was initially inspired by [zer0b.in](https://github.com/zer0bin-dev
 | ---------------------------------------------- | ---------- | -------------- | ----------------------------------- |
 | [vaultb.in](https://vaultb.in)                 | 30 days    | 69,420 chars   | Germany                             |
 
-The [vaultb.in](https://vaultb.in) instance quite a few aliases:
-- [pls.help.me.debug.lol](https://pls.help.me.debug.lol) & [help.me.debug.lol](https://help.me.debug.lol)
-- [fix.my.bug.lol](https://fix.my.bug.lol), [i.have.a.bug.lol](https://i.have.a.bug.lol), [pls.fix.my.bug.lol](https://pls.fix.my.bug.lol) & [there.is.a.bug.lol](https://there.is.a.bug.lol)
-- [fix.my.typo.lol](https://fix.my.typo.lol), [i.have.a.typo.lol](https://i.have.a.typo.lol), [pls.fix.my.typo.lol](https://pls.fix.my.typo.lol) & [there.is.a.typo.lol](https://there.is.a.typo.lol)
-
 ## Installation
 
 ### Prebuilt Binaries
