@@ -37,7 +37,9 @@ pub enum ApiError {
     #[error("Invalid paste ID")]
     InvalidPasteId,
     #[error("Paste is too large")]
-    PasteTooLarge
+    PasteTooLarge,
+    #[error("Failed to extract a ratelimit key")]
+    RatelimitKeyExtractionFailed
 }
 
 impl ResponseError for ApiError {
@@ -46,7 +48,8 @@ impl ResponseError for ApiError {
             ApiError::DatabaseFailure => StatusCode::INTERNAL_SERVER_ERROR,
             ApiError::UnknownPaste => StatusCode::NOT_FOUND,
             ApiError::InvalidPasteId => StatusCode::NOT_FOUND,
-            ApiError::PasteTooLarge => StatusCode::BAD_REQUEST
+            ApiError::PasteTooLarge => StatusCode::BAD_REQUEST,
+            ApiError::RatelimitKeyExtractionFailed => StatusCode::INTERNAL_SERVER_ERROR
         }
     }
 

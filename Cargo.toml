@@ -21,6 +21,7 @@ base64 = "0.13.0"
 sha2 = "0.10.2"
 thiserror = "1.0.30"
 rust-embed = { version = "6.3.0", features = ["interpolate-folder-path"] }
+actix-governor = "0.3.0"
 # lol_html = "0.3.1"
 # html-escape = "0.2.11"
 # unicode-truncate = "0.2.0"

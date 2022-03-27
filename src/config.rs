@@ -28,6 +28,38 @@ impl Default for DatabaseConfig {
     }
 }
 
+fn default_ratelimit_burst_size() -> u32 {
+    5
+}
+
+fn default_ratelimit_per_second() -> u64 {
+    5
+}
+
+fn default_ratelimit_reverse_proxy() -> bool {
+    false
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RatelimitConfig {
+    #[serde(default = "default_ratelimit_burst_size")]
+    pub burst_size: u32,
+    #[serde(default = "default_ratelimit_per_second")]
+    pub per_second: u64,
+    #[serde(default = "default_ratelimit_reverse_proxy")]
+    pub reverse_proxy: bool,
+}
+
+impl Default for RatelimitConfig {
+    fn default() -> Self {
+        Self {
+            burst_size: default_ratelimit_burst_size(),
+            per_second: default_ratelimit_per_second(),
+            reverse_proxy: default_ratelimit_reverse_proxy()
+        }
+    }
+}
+
 fn default_host() -> String {
     "127.0.0.1".to_string()
 }
@@ -48,6 +80,9 @@ fn default_max_expiration() -> u64 {
 pub struct VaultbinConfig {
     #[serde(default)]
     pub database: DatabaseConfig,
+    #[serde(default)]
+    pub ratelimit: RatelimitConfig,
+
     #[serde(default = "default_host")]
     pub host: String,
     #[serde(default = "default_port")]
