@@ -21,6 +21,15 @@ This project was initially inspired by [zer0b.in](https://github.com/zer0bin-dev
 | ---------------------------------------------- | ---------- | -------------- | ----------------------------------- |
 | [vaultb.in](https://vaultb.in)                 | 30 days    | 69,420 chars   | Germany                             |
 
+## API Routes
+
+| Route | Method | Description | Paramaters
+| --- | --- | --- | --- |
+| `/pastes/{paste_id}` | `GET` | Get information about a paste | None
+| `/api/pastes/{paste_id}/raw` | `GET` | Get the raw paste | None
+| `/api/stats` | `GET` | Does nothing | None
+| `/pastes` | `POST` | Create a paste | `language` `content`
+
 ## Installation
 
 ### Prebuilt Binaries
