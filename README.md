@@ -23,7 +23,7 @@ This project was initially inspired by [zer0b.in](https://github.com/zer0bin-dev
 
 ## API Routes
 
-| Route | Method | Description | Paramaters
+| Route | Method | Description | Parameters
 | --- | --- | --- | --- |
 | `/pastes/{paste_id}` | `GET` | Get information about a paste | None
 | `/api/pastes/{paste_id}/raw` | `GET` | Get the raw paste | None
@@ -40,13 +40,13 @@ You can find prebuilt binaries for the most common operating systems [here](http
 
 To build this project from source you need [node](https://nodejs.org/en/download/) and [rust](https://www.rust-lang.org/tools/install) installed.
 
-Build the frontend:
+#### Build the frontend:
 ```shell
 npm run install
 npm run build
 ```
 
-Build the backend:
+#### Build the backend:
 ```shell
 # just build
 cargo build --release
@@ -77,8 +77,8 @@ per_second = 5 # seconds it takes to refill one request
 reverse_proxy = false # if the backend is deployed behind a revers proxy -> this changes the way the peers IP is retrieved
 ```
 
-In addition to creating a `Config.toml` file you can also override these values using environment variables:
-For example:
+In addition to creating a `Config.toml` file, you can also override these values using environment variables, for example:
+
 ```shell
 VAULTBIN_HOST=0.0.0.0
 VAULTBIN_DATABASE__CACHE_SIZE=9999999
