@@ -23,7 +23,7 @@ This project was initially inspired by [zer0b.in](https://github.com/zer0bin-dev
 
 ## API Routes
 
-| Route | Method | Description | Paramaters
+| Route | Method | Description | Parameters
 | --- | --- | --- | --- |
 | `/pastes/{paste_id}` | `GET` | Get information about a paste | None
 | `/api/pastes/{paste_id}/raw` | `GET` | Get the raw paste | None
