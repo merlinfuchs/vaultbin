@@ -77,8 +77,8 @@ per_second = 5 # seconds it takes to refill one request
 reverse_proxy = false # if the backend is deployed behind a revers proxy -> this changes the way the peers IP is retrieved
 ```
 
-In addition to creating a `Config.toml` file you can also override these values using environment variables:
-For example:
+In addition to creating a `Config.toml` file you can also override these values using environment variables, for example:
+
 ```shell
 VAULTBIN_HOST=0.0.0.0
 VAULTBIN_DATABASE__CACHE_SIZE=9999999
