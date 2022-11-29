@@ -40,13 +40,13 @@ You can find prebuilt binaries for the most common operating systems [here](http
 
 To build this project from source you need [node](https://nodejs.org/en/download/) and [rust](https://www.rust-lang.org/tools/install) installed.
 
-Build the frontend:
+#### Build the frontend:
 ```shell
 npm run install
 npm run build
 ```
 
-Build the backend:
+#### Build the backend:
 ```shell
 # just build
 cargo build --release
