@@ -4,8 +4,16 @@
   <head>
     <meta charset="utf-8" />
     <title>vaultbin</title>
+    <meta
+      name="description"
+      content="A blazingly fast and secure Pastebin alternative"
+    />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta property="og:title" content="vaultbin" />
+    <meta
+      property="og:description"
+      content="A blazingly fast and secure Pastebin alternative"
+    />
 
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
 
@@ -32,8 +40,17 @@
 
         <textarea
           spellcheck="false"
+          autocomplete="off"
           class="editor-textarea"
-          style="{{ if not .New }}display: none{{ end }}"
+          {{
+          if
+          not
+          .New
+          }}
+          style="display: none"
+          {{
+          end
+          }}
           name="content"
         >
           {{- .Content -}}
@@ -41,12 +58,14 @@
         <input
           type="text"
           name="language"
+          autocomplete="off"
           value="{{ .Language }}"
           style="display: none"
         />
         <input
           type="text"
           name="id"
+          autocomplete="off"
           value="{{ .PasteID }}"
           style="display: none"
         />

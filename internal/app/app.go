@@ -3,6 +3,8 @@ package app
 import (
 	"html/template"
 
+	"log/slog"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/merlinfuchs/vaultbin/internal/db"
@@ -24,6 +26,23 @@ func New(db *db.DB) *echo.Echo {
 
 	t := views.New()
 	e.Renderer = t
+
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogStatus: true,
+		LogURI:    true,
+		LogMethod: true,
+		LogError:  true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			logCtx := slog.With("method", v.Method).With("path", v.URI).With("status", v.Status).With("error", v.Error)
+
+			if v.Error != nil {
+				logCtx.Error("Request has failed")
+			} else {
+				logCtx.Info("Request has been processed")
+			}
+			return nil
+		},
+	}))
 
 	pastes := pastes.New(db)
 

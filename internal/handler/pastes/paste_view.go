@@ -1,7 +1,6 @@
 package pastes
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -16,8 +15,17 @@ func (h *PastesHandler) PasteView(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+
 	if paste == nil {
-		return fmt.Errorf("Paste not found")
+		err = c.Render(http.StatusOK, "paste", views.PasteViewData{
+			New:     true,
+			Content: "Paste doesn't exist or has expired",
+		})
+		if err != nil {
+			slog.With("error", err).Error("failed to render paste_new template")
+			return err
+		}
+		return nil
 	}
 
 	viewCount, err := h.store.CountPasteView(paste.ID)

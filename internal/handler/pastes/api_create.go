@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/merlinfuchs/vaultbin/internal/public/views"
@@ -19,6 +20,18 @@ func (h *PastesHandler) PasteAPICreate(c echo.Context) error {
 	err := c.Bind(&req)
 	if err != nil {
 		return err
+	}
+
+	if strings.TrimSpace(req.Content) == "" {
+		err = c.Render(http.StatusOK, "paste.content", views.PasteViewData{
+			New:     true,
+			Content: req.Content,
+		})
+		if err != nil {
+			slog.With("error", err).Error("failed to render paste_new template")
+			return err
+		}
+		return nil
 	}
 
 	paste, err := h.store.CreatePaste(req.Content, req.Language)

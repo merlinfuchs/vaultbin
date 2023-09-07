@@ -7,6 +7,7 @@ import (
 
 	"github.com/dgraph-io/badger/v4"
 	"github.com/merlinfuchs/vaultbin/internal/common"
+	"github.com/merlinfuchs/vaultbin/internal/config"
 	"github.com/merlinfuchs/vaultbin/internal/store"
 )
 
@@ -41,7 +42,8 @@ func (db *DB) CreatePaste(content, language string) (*store.Paste, error) {
 
 	key := fmt.Sprintf("pastes.%s", keyHash)
 	err = db.bg.Update(func(txn *badger.Txn) error {
-		return txn.Set([]byte(key), val)
+		e := badger.NewEntry([]byte(key), val).WithTTL(time.Duration(config.K.Int("paste_ttl")) * time.Second)
+		return txn.SetEntry(e)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("db transaction failed: %w", err)

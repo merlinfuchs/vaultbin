@@ -1,0 +1,6 @@
+port = "8080"
+host = "localhost"
+
+db_path = "vaultbin.badger"
+
+paste_ttl = 2592000 # 30 seconds

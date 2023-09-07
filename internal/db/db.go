@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dgraph-io/badger/v4"
+	"github.com/merlinfuchs/vaultbin/internal/config"
 )
 
 type DB struct {
@@ -12,7 +13,7 @@ type DB struct {
 }
 
 func New() (*DB, error) {
-	db, err := badger.Open(badger.DefaultOptions("vaultbin.badger"))
+	db, err := badger.Open(badger.DefaultOptions(config.K.String("db_path")))
 	if err != nil {
 		return nil, fmt.Errorf("error opening badger db: %w", err)
 	}
