@@ -233,10 +233,19 @@
           </a>
         </div>
       </div>
+      {{ if not .New }}
       <div class="stats">
         <div class="stats-container">
-          <div class="stats-stat">Python</div>
-          {{ if not .New }}
+          {{ if .Language }}
+          <div
+            class="stats-stat"
+            id="language"
+            style="text-transform: uppercase"
+          >
+            {{ .Language }}
+          </div>
+          {{ end }}
+
           <div class="stats-stat">
             <svg
               aria-hidden="true"
@@ -255,9 +264,9 @@
             </svg>
             <span>{{.Views}}</span>
           </div>
-          {{end}}
         </div>
       </div>
+      {{end}}
     </form>
     {{end}}
   </body>

@@ -2,3 +2,5 @@
 data
 .DS_Store
 vaultbin.badger
+vaultbin
+vaultbin.toml

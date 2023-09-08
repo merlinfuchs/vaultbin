@@ -55,7 +55,7 @@ func (db *DB) CreatePaste(content, language string) (*store.Paste, error) {
 func (db *DB) Paste(id string) (*store.Paste, error) {
 	encryptionKey, err := common.DecodeEncryptionKey(id)
 	if err != nil {
-		return nil, fmt.Errorf("failed decoding encryption key: %w", err)
+		return nil, nil
 	}
 
 	var res *store.Paste
