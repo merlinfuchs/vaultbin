@@ -1,0 +1,14 @@
+port = "8080"
+host = "localhost"
+
+paste_max_size = 69420
+paste_max_ttl = 2592000 # 30 days
+paste_default_ttl = 2592000 # 30 days
+
+[database]
+path = "vaultbin.db"
+
+[ratelimit] # 5 request / 5 seconds
+burst_size = 5
+per_second = 5
+reverse_proxy = false

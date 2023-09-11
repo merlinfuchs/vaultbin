@@ -1,0 +1,173 @@
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1e2130;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  overflow-y: auto;
+}
+
+.center {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.stats {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.editor-textarea {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  outline: none;
+  resize: none;
+  margin: 0;
+  border: none;
+  font-size: 14px;
+  color: white;
+}
+
+.menu-container {
+  padding: 10px 12px 10px 10px;
+  background-color: #262b40;
+  position: relative;
+  display: flex;
+  border-bottom-left-radius: 10px;
+  user-select: none;
+}
+
+.menu-button {
+  flex: none;
+}
+
+.menu-button:hover svg:not(.disabled) {
+  color: #d1daff;
+}
+
+.menu-button svg {
+  color: #b0bcf7;
+  margin: 0 5px;
+  cursor: pointer;
+  height: 1em;
+  font-size: 1.5rem;
+  vertical-align: -0.125em;
+}
+
+.menu-button svg.disabled {
+  color: #7b84b0;
+  cursor: default;
+}
+
+.menu-description {
+  display: none;
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  width: 100%;
+}
+
+.menu-description-cleanup {
+  height: 10px;
+  background-color: #262b40;
+}
+
+.menu-description-inner {
+  height: 50px;
+  padding: 5px 10px;
+  background-color: #30364f;
+  border-bottom-left-radius: 10px;
+}
+
+.menu-description-title {
+  color: #d1daff;
+  font-weight: 600;
+}
+
+.menu-description-shortcut {
+  color: #b0bcf7;
+  font-size: 11px;
+}
+
+.menu-button:hover .menu-description {
+  display: block;
+}
+
+.stats-container {
+  padding: 10px 16px 10px 14px;
+  background-color: #262b40;
+  position: relative;
+  display: flex;
+  border-top-left-radius: 10px;
+  color: #b0bcf7;
+  align-items: center;
+  font-weight: 600;
+  user-select: none;
+}
+
+.stats-stat {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.stats-stat svg {
+  margin-right: 8px;
+  height: 1em;
+  vertical-align: -0.125em;
+}
+
+.view-container {
+  color: white;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.view-line {
+  display: flex;
+}
+
+.view-line-number {
+  min-width: 30px;
+  padding-right: 8px;
+  font-weight: 600;
+  flex: none;
+  color: #b0bcf7;
+  user-select: none;
+}
+
+.view-line-code {
+  white-space: pre-wrap;
+  word-break: break-all;
+  flex: auto;
+}
