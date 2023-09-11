@@ -8,7 +8,33 @@ import (
 	"github.com/merlinfuchs/vaultbin/internal/public/views"
 )
 
-func (h *PastesHandler) PasteView(c echo.Context) error {
+func (h *PastesHandler) PagePasteNew(c echo.Context) error {
+	err := c.Render(http.StatusOK, "paste", views.PasteViewData{
+		New: true,
+	})
+	if err != nil {
+		slog.With("error", err).Error("failed to render paste_new template")
+		return err
+	}
+	return nil
+}
+
+func (h *PastesHandler) PagePasteRaw(c echo.Context) error {
+	pasteID := c.Param("paste_id")
+
+	paste, err := h.store.Paste(pasteID)
+	if err != nil {
+		return err
+	}
+
+	if paste == nil {
+		return c.String(http.StatusOK, "Paste doesn't exist or has expired")
+	}
+
+	return c.String(http.StatusOK, paste.Content)
+}
+
+func (h *PastesHandler) PagePasteView(c echo.Context) error {
 	pasteID := c.Param("paste_id")
 
 	paste, err := h.store.Paste(pasteID)

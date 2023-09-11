@@ -1,6 +1,14 @@
 port = "8080"
 host = "localhost"
 
-db_path = "vaultbin.badger"
+paste_max_size = 69420
+paste_max_ttl = 2592000 # 30 days
+paste_default_ttl = 2592000 # 30 days
 
-paste_ttl = 2592000 # 30 seconds
+[database]
+path = "vaultbin.db"
+
+[ratelimit] # 5 request / 5 seconds
+burst_size = 5
+per_second = 5
+reverse_proxy = false

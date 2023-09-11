@@ -13,7 +13,7 @@ type DB struct {
 }
 
 func New() (*DB, error) {
-	db, err := badger.Open(badger.DefaultOptions(config.K.String("db_path")))
+	db, err := badger.Open(badger.DefaultOptions(config.K.String("database.path")))
 	if err != nil {
 		return nil, fmt.Errorf("error opening badger db: %w", err)
 	}

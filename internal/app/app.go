@@ -2,15 +2,20 @@ package app
 
 import (
 	"html/template"
+	"net/http"
+	"time"
 
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/merlinfuchs/vaultbin/internal/apierror"
+	"github.com/merlinfuchs/vaultbin/internal/config"
 	"github.com/merlinfuchs/vaultbin/internal/db"
 	"github.com/merlinfuchs/vaultbin/internal/handler/pastes"
 	"github.com/merlinfuchs/vaultbin/internal/public/static"
 	"github.com/merlinfuchs/vaultbin/internal/public/views"
+	"golang.org/x/time/rate"
 )
 
 type Template struct {
@@ -44,15 +49,43 @@ func New(db *db.DB) *echo.Echo {
 		},
 	}))
 
+	if config.K.Bool("ratelimit.reverse_proxy") {
+		e.IPExtractor = echo.ExtractIPFromRealIPHeader()
+	} else {
+		e.IPExtractor = echo.ExtractIPDirect()
+	}
+
+	rateLimitMiddleware := middleware.RateLimiterWithConfig(middleware.RateLimiterConfig{
+		Skipper: middleware.DefaultSkipper,
+		Store: middleware.NewRateLimiterMemoryStoreWithConfig(
+			middleware.RateLimiterMemoryStoreConfig{
+				Rate:      rate.Limit(config.K.Int("ratelimit.per_second")),
+				Burst:     config.K.Int("ratelimit.burst"),
+				ExpiresIn: time.Minute,
+			},
+		),
+		IdentifierExtractor: func(ctx echo.Context) (string, error) {
+			id := ctx.RealIP()
+			return id, nil
+		},
+		DenyHandler: func(context echo.Context, identifier string, err error) error {
+			return context.JSON(http.StatusTooManyRequests, nil)
+		},
+	})
+
 	pastes := pastes.New(db)
 
-	e.GET("/", pastes.PasteNew).Name = "paste_new"
-	e.GET("/:paste_id", pastes.PasteView).Name = "paste_view"
-	e.GET("/:paste_id/raw", pastes.PasteRaw).Name = "paste_raw"
-	e.POST("/pastes/create", pastes.PasteAPICreate).Name = "paste_create"
-	e.POST("/pastes/duplicate", pastes.PasteAPIDuplicate).Name = "paste_duplicate"
-	e.POST("/pastes/new", pastes.PasteAPINew).Name = "paste_new"
-	e.POST("/pastes/raw", pastes.PasteAPIRaw).Name = "paste_new"
+	e.Use(apierror.ErrorRewriteMiddleware())
+
+	e.GET("/", pastes.PagePasteNew)
+	e.GET("/:paste_id", pastes.PagePasteView)
+	e.GET("/:paste_id/raw", pastes.PagePasteRaw)
+	e.POST("/internal/pastes/create", pastes.InternalPasteCreate, rateLimitMiddleware)
+	e.POST("/internal/pastes/duplicate", pastes.InternalPasteDuplicate)
+	e.POST("/internal/pastes/new", pastes.InternalPasteNew)
+	e.POST("/internal/pastes/raw", pastes.InternalPasteRaw)
+	e.POST("/api/pastes", pastes.APIPasteCreate)
+	e.GET("/api/pastes/:paste_id", pastes.APIPasteGet)
 
 	e.StaticFS("/static", static.FS)
 

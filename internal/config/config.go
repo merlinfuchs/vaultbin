@@ -17,7 +17,7 @@ import (
 var K = koanf.New(".")
 
 const DefaultConfigName = "vaultbin.toml"
-const envVarPrefix = "VBIN__"
+const envVarPrefix = "VAULTBIN__"
 
 var CfgFile string
 

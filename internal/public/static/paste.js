@@ -8,8 +8,6 @@ function guessProgrammingLanguage(value) {
         ignoreIllegals: false,
       });
 
-      console.log(next, result.relevance);
-
       if (result.relevance > previous.relevance) {
         return { ...result, language: next };
       }
@@ -56,5 +54,5 @@ document.addEventListener("htmx:configRequest", (e) => {
   if (!content) return;
 
   const language = guessProgrammingLanguage(content);
-  e.detail.parameters["language"] = language;
+  e.detail.parameters["language"] = language || "";
 });

@@ -1,6 +1,6 @@
 /target
 data
 .DS_Store
-vaultbin.badger
+vaultbin.db
 vaultbin
 vaultbin.toml

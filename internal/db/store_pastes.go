@@ -7,11 +7,10 @@ import (
 
 	"github.com/dgraph-io/badger/v4"
 	"github.com/merlinfuchs/vaultbin/internal/common"
-	"github.com/merlinfuchs/vaultbin/internal/config"
 	"github.com/merlinfuchs/vaultbin/internal/store"
 )
 
-func (db *DB) CreatePaste(content, language string) (*store.Paste, error) {
+func (db *DB) CreatePaste(content, language string, ttl time.Duration) (*store.Paste, error) {
 	encryptionKey, err := common.GenerateEncryptionKey()
 	if err != nil {
 		return nil, fmt.Errorf("generating encryption key failed: %w", err)
@@ -23,6 +22,7 @@ func (db *DB) CreatePaste(content, language string) (*store.Paste, error) {
 		Content:   content,
 		Language:  language,
 		CreatedAt: time.Now().UTC(),
+		ExpiresAt: time.Now().UTC().Add(ttl),
 	}
 
 	val, err := json.Marshal(paste)
@@ -42,7 +42,7 @@ func (db *DB) CreatePaste(content, language string) (*store.Paste, error) {
 
 	key := fmt.Sprintf("pastes.%s", keyHash)
 	err = db.bg.Update(func(txn *badger.Txn) error {
-		e := badger.NewEntry([]byte(key), val).WithTTL(time.Duration(config.K.Int("paste_ttl")) * time.Second)
+		e := badger.NewEntry([]byte(key), val).WithTTL(ttl)
 		return txn.SetEntry(e)
 	})
 	if err != nil {
