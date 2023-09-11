@@ -1,32 +1,28 @@
+name: Release Builds
+
 on:
   release:
     types: [created]
 
-name: Release
 jobs:
   release:
-    name: release ${{ matrix.target }}
+    name: Release Vaultbin
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86_64-pc-windows-gnu
-            archive: zip
-          - target: x86_64-unknown-linux-musl
-            archive: tar.gz tar.xz
-          - target: x86_64-apple-darwin
-            archive: zip
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          node-version: '16'
-      - run: npm install && npm run build
-        working-directory: ./frontend
-      - name: Compile and release
-        uses: rust-build/rust-build.action@latest
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ">=1.21.0"
+          check-latest: true
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
