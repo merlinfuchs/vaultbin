@@ -33,12 +33,14 @@ func New(db *db.DB) *echo.Echo {
 	e.Renderer = t
 
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
-		LogStatus: true,
-		LogURI:    true,
-		LogMethod: true,
-		LogError:  true,
+		LogStatus:    true,
+		LogRoutePath: true,
+		LogMethod:    true,
+		LogError:     true,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			logCtx := slog.With("method", v.Method).With("path", v.URI).With("status", v.Status).With("error", v.Error)
+			// The paste ID in the URL is the key that decrypts the paste, so only the
+			// route pattern is logged, like /:paste_id.
+			logCtx := slog.With("method", v.Method).With("route", v.RoutePath).With("status", v.Status).With("error", v.Error)
 
 			if v.Error != nil {
 				logCtx.Error("Request has failed")
